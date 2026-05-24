@@ -6,88 +6,183 @@
 <title>GC Dashboard — 22 May '26</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#f0f2f5;font-family:Arial,sans-serif;font-size:13px;color:#111827}
+body{background:#f0f2f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:13px;color:#111827}
 a{color:#1d4ed8;text-decoration:none}a:hover{text-decoration:underline}
-.wrap{max-width:960px;margin:0 auto;padding:16px}
-.hdr{background:#1a1a2e;border-radius:8px;padding:14px 18px;margin-bottom:10px}
-.hdr-title{font-size:17px;font-weight:bold;color:#fff}
-.hdr-sub{font-size:11px;color:#9ca3af;margin-top:3px}
-.date-strip{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:8px 14px;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.date-lbl{font-size:10px;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em}
-.date-val{font-size:12px;font-weight:600;color:#374151;background:#f3f4f6;padding:3px 10px;border-radius:4px;border:1px solid #e5e7eb}
-.brand-tabs{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
-.btab{padding:7px 18px;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;background:#fff;border:1.5px solid #e5e7eb;color:#374151;transition:all .15s}
-.btab:hover{border-color:#6366f1;color:#4f46e5}
-.btab.active{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);border-radius:10px;padding:14px 20px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.hdr-title{font-size:17px;font-weight:700;color:#f8fafc;letter-spacing:-.01em}
+.hdr-sub{font-size:11px;color:#94a3b8;margin-top:3px}
+
+/* ── Date strip ── */
+.date-strip{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:8px 14px;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.date-lbl{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.date-val{font-size:12px;font-weight:600;color:#334155;background:#f8fafc;padding:3px 10px;border-radius:5px;border:1px solid #e2e8f0}
+
+/* ── Brand tabs — sticky ── */
+.btab-wrap{position:sticky;top:0;z-index:100;background:#f0f2f5;padding:6px 0 4px;margin-bottom:4px}
+.brand-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.btab{padding:7px 20px;border-radius:7px;cursor:pointer;font-weight:600;font-size:13px;background:#fff;border:1.5px solid #e2e8f0;color:#475569;transition:all .15s;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.btab:hover{border-color:#6366f1;color:#4f46e5;background:#f5f3ff}
+.btab.active{background:#1d4ed8;color:#fff;border-color:#1d4ed8;box-shadow:0 2px 6px rgba(29,78,216,.3)}
+
+/* ── Performance pills (share change indicators) ── */
 .pills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
-.pill{font-size:11px;padding:3px 9px;border-radius:12px;white-space:nowrap;cursor:pointer}
-.pg{background:#dcfce7;color:#16a34a}.pr{background:#fee2e2;color:#dc2626}.pn{background:#f3f4f6;color:#6b7280}
+.pill{font-size:11px;padding:3px 10px;border-radius:12px;white-space:nowrap;cursor:pointer;font-weight:500;border:1px solid transparent;transition:all .1s}
+.pill:hover{opacity:.85;transform:translateY(-1px)}
+.pg{background:#dcfce7;color:#15803d;border-color:#bbf7d0}
+.pr{background:#fee2e2;color:#dc2626;border-color:#fecaca}
+.pn{background:#f1f5f9;color:#64748b;border-color:#e2e8f0}
+
+/* ── Category pills ── */
 .cat-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.cpill{padding:5px 13px;border-radius:20px;cursor:pointer;font-size:11px;font-weight:600;background:#e5e7eb;color:#374151;transition:all .15s;white-space:nowrap;border:2px solid transparent}
+.cpill{padding:5px 13px;border-radius:20px;cursor:pointer;font-size:11px;font-weight:600;background:#e2e8f0;color:#475569;transition:all .15s;white-space:nowrap;border:2px solid transparent}
 .cpill:hover{background:#eff6ff;color:#3b82f6;border-color:#bfdbfe}
-.cpill.active{background:#2563eb;color:#ffffff;border-color:#1d4ed8;box-shadow:0 1px 4px rgba(37,99,235,.35)}
-.tbadge{font-size:9px;background:#fff;border-radius:3px;padding:1px 4px;margin-left:4px;opacity:.7}
-.card{background:#fff;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:10px;overflow:hidden}
-.card-hdr{background:#f9fafb;border-bottom:1px solid #e5e7eb;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
-.cat-name{font-size:14px;font-weight:bold;color:#111827}
-.brand-tag{font-size:11px;color:#6b7280;margin-left:8px}
-.ppu-line{font-size:11px;color:#6b7280}
-.ppu-ours{font-weight:bold;color:#111827}
-.sec-lbl{font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:.07em;font-weight:600;padding:8px 14px 4px}
+.cpill.active{background:#2563eb;color:#fff;border-color:#1d4ed8;box-shadow:0 2px 6px rgba(37,99,235,.3)}
+.tbadge{font-size:9px;background:rgba(255,255,255,.2);border-radius:3px;padding:1px 4px;margin-left:3px;opacity:.8}
+.cpill:not(.active) .tbadge{background:#fff;color:#6b7280;opacity:1}
+
+/* ── Card ── */
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.card-hdr{background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);border-bottom:1px solid #e2e8f0;padding:11px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
+.cat-name{font-size:15px;font-weight:700;color:#0f172a}
+.brand-tag{font-size:11px;color:#64748b;margin-left:8px;background:#f1f5f9;padding:2px 7px;border-radius:4px;border:1px solid #e2e8f0}
+.ppu-line{font-size:11px;color:#64748b}
+.ppu-ours{font-weight:700;color:#0f172a}
+
+/* ── Section label ── */
+.sec-lbl{font-size:10px;color:#334155;text-transform:uppercase;letter-spacing:.08em;font-weight:700;padding:8px 16px 8px 13px;display:flex;align-items:center;gap:8px;background:#f1f5f9;border-top:2px solid #e2e8f0;border-bottom:1px solid #e2e8f0;border-left:3px solid #2563eb;margin-top:0}
+.sec-lbl::after{content:'';flex:1;height:1px;background:#cbd5e1;margin-left:4px}
+
+/* ── Market strip ── */
+.mkt-strip{display:flex;gap:0;padding:0;background:#fff;border-bottom:1px solid #e2e8f0}
+.mi{flex:1;padding:12px 16px;border-right:1px solid #f1f5f9;position:relative}
+.mi:last-child{border-right:none}
+.mi .lbl{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:4px}
+.mi .val{font-size:18px;font-weight:800;color:#0f172a;line-height:1.1}
+.mi .chg{font-size:11px;margin-top:3px;font-weight:500}
+
+/* ── Snapshot strip ── */
+.snap-strip{display:flex;gap:0;padding:0;background:#f0f9ff;border-bottom:2px solid #bae6fd}
+.snap-item{flex:1;padding:7px 12px;border-right:1px solid #bae6fd;font-size:11px}
+.snap-item:last-child{border-right:none}
+.snap-item .s-lbl{font-size:9px;color:#0ea5e9;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.snap-item .s-val{font-weight:700;color:#0f172a}
+.snap-item .s-badges{display:flex;gap:3px;margin-top:3px;flex-wrap:wrap}
+
+/* ── Tables ── */
 table.t{width:100%;border-collapse:collapse;font-size:12px}
-table.t th{padding:5px 8px;text-align:right;font-weight:500;color:#6b7280;font-size:10px;background:#f9fafb;white-space:nowrap;border-bottom:1px solid #e5e7eb}
+table.t th{padding:6px 10px;text-align:right;font-weight:600;color:#64748b;font-size:10px;background:#f8fafc;white-space:nowrap;border-bottom:2px solid #e2e8f0;letter-spacing:.03em}
 table.t th:first-child{text-align:left}
-table.t td{padding:5px 8px;text-align:right;border-top:1px solid #f3f4f6;vertical-align:middle}
+table.t td{padding:6px 10px;text-align:right;border-top:1px solid #f1f5f9;vertical-align:middle}
 table.t td:first-child{text-align:left}
 table.t tr.own{background:#eff6ff}
 table.t tr.own td:first-child{color:#1d4ed8;font-weight:700}
-table.t tr.warn{background:#fff0f0}
-table.t tr:hover{background:#fafafa}
+table.t tr.warn{background:#fff5f5}
+table.t tr:hover{background:#f8fafc}
 table.t tr.own:hover{background:#dbeafe}
-.ob{font-size:10px;background:#dbeafe;color:#1d4ed8;padding:1px 5px;border-radius:3px;margin-left:4px}
-.mkt-strip{display:flex;gap:20px;padding:10px 14px;background:#fafafa;border-bottom:1px solid #e5e7eb;flex-wrap:wrap}
-.mi .lbl{font-size:10px;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
-.mi .val{font-size:15px;font-weight:700;color:#111827}
-.mi .chg{font-size:11px;margin-top:1px}
-.attr-row{display:flex;gap:8px;padding:10px 14px;border-bottom:1px solid #e5e7eb;flex-wrap:wrap}
-.acard{flex:1;min-width:220px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;padding:8px 10px;font-size:12px}
-.atitle{font-weight:bold;margin-bottom:4px}
-.asub{font-size:11px;color:#6b7280;line-height:1.5}
-.badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-.badge{font-size:10px;padding:2px 7px;border-radius:4px}
-.br{background:#fee2e2;color:#dc2626}.by{background:#fef3c7;color:#d97706}.bg{background:#dcfce7;color:#16a34a}.bb{background:#dbeafe;color:#1d4ed8}
-.xc{padding:8px 14px;border-bottom:1px solid #e5e7eb;font-size:11px;line-height:2}
-.wo-gl{font-size:10px;font-weight:bold;color:#6b7280;text-transform:uppercase;padding:6px 14px 2px;letter-spacing:.05em}
-.ov{overflow-x:auto}
-.summary{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:12px 14px;margin-top:4px}
-.sgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px}
-.scell{background:#f9fafb;border-radius:6px;padding:10px 12px}
-.scell .lbl{font-size:10px;color:#9ca3af;text-transform:uppercase;margin-bottom:4px}
-.scell .val{font-size:13px;font-weight:bold}
-.pos{color:#16a34a}.neg{color:#dc2626}.neu{color:#6b7280}
-.op-row{padding:8px 14px;border-bottom:1px solid #e5e7eb;background:#fffbeb}
-.op-title{font-size:10px;font-weight:bold;color:#d97706;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
-.op-item{display:inline-block;margin:2px 6px 2px 0;font-size:11px}
+.ob{font-size:10px;background:#dbeafe;color:#1d4ed8;padding:1px 5px;border-radius:3px;margin-left:4px;font-weight:600}
 
+/* ── Attribution row ── */
+.attr-row{display:flex;gap:10px;padding:12px 16px;border-bottom:1px solid #e2e8f0;flex-wrap:wrap}
+.acard{flex:1;min-width:230px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;font-size:12px}
+.acard.pos-card{background:#f0fdf4;border-color:#bbf7d0}
+.acard.neg-card{background:#fff5f5;border-color:#fecaca}
+.acard.watch-card{background:#eff6ff;border-color:#bfdbfe}
+.atitle{font-weight:700;margin-bottom:5px;font-size:12px;line-height:1.4}
+.atitle.pos{color:#15803d}.atitle.neg{color:#dc2626}.atitle.neu{color:#475569}
+.asub{font-size:11px;color:#64748b;line-height:1.6}
+.metric-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.mchip{font-size:10px;padding:2px 8px;border-radius:5px;font-weight:500;display:inline-flex;align-items:center;gap:3px}
+.mchip.up{background:#dcfce7;color:#15803d}
+.mchip.dn{background:#fee2e2;color:#dc2626}
+.mchip.warn{background:#fef3c7;color:#d97706}
+.mchip.info{background:#dbeafe;color:#1d4ed8}
+.mchip.neu{background:#f1f5f9;color:#475569}
+
+/* ── Badges (keep for compatibility) ── */
+.badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.badge{font-size:10px;padding:2px 8px;border-radius:5px;font-weight:500}
+.br{background:#fee2e2;color:#dc2626}.by{background:#fef3c7;color:#d97706}
+.bg{background:#dcfce7;color:#15803d}.bb{background:#dbeafe;color:#1d4ed8}
+
+/* ── Outperformers row ── */
+.op-row{padding:8px 16px;border-bottom:1px solid #e2e8f0;background:#fffbeb;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.op-title{font-size:10px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:.05em;margin-right:4px}
+.op-item{display:inline-flex;align-items:center;gap:4px;font-size:11px;background:#fff;border:1px solid #fde68a;border-radius:5px;padding:2px 8px}
+
+/* ── Cross-channel ── */
+.xc{padding:10px 16px;border-bottom:1px solid #e2e8f0;font-size:11px;line-height:2;background:#fafafa}
+.xc-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-bottom:2px}
+.xc-item{display:flex;align-items:center;gap:5px;font-size:12px}
+.xc-lbl{font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.xc-val{font-weight:700;color:#0f172a}
+
+/* ── Watch out ── */
+.wo-gl{font-size:12px;font-weight:800;color:#fff;text-transform:uppercase;padding:11px 16px 11px 16px;letter-spacing:.06em;display:flex;align-items:center;gap:10px}
+.wo-gl.aw{background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 100%);border-top:3px solid #1e3a8a}
+.wo-gl.prem{background:linear-gradient(135deg,#92400e 0%,#d97706 100%);border-top:3px solid #92400e}
+.wo-gl.mass{background:linear-gradient(135deg,#1e293b 0%,#475569 100%);border-top:3px solid #1e293b}
+.wo-gl .wo-meta{font-size:10px;font-weight:400;opacity:.8;margin-left:auto;text-transform:none;letter-spacing:0}
+.wo-tbl-aw{background:#eff6ff}.wo-tbl-prem{background:#fffbeb}.wo-tbl-mass{background:#f8fafc}
+.wo-tbl-aw table.t tr:hover{background:#dbeafe}
+.wo-tbl-prem table.t tr:hover{background:#fef3c7}
+.wo-tbl-mass table.t tr:hover{background:#f1f5f9}
+.ov{overflow-x:auto}
+.summary{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-top:4px}
+
+/* ── City ── */
+.city-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;padding:10px 16px}
+.city-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:8px 10px}
+.city-card.green{border-left:3px solid #22c55e;background:#f0fdf4}
+.city-card.red{border-left:3px solid #ef4444;background:#fff5f5}
+.city-card.orange{border-left:3px solid #f59e0b;background:#fffbeb}
+.city-card.blue{border-left:3px solid #3b82f6;background:#eff6ff}
+.city-name{font-size:12px;font-weight:700;color:#0f172a;margin-bottom:4px}
+.city-meta{font-size:10px;color:#64748b}
+.city-flag{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:600;margin-top:4px;display:inline-block}
+.city-flag.green{background:#dcfce7;color:#15803d}
+.city-flag.red{background:#fee2e2;color:#dc2626}
+.city-flag.orange{background:#fef3c7;color:#d97706}
+.city-flag.blue{background:#dbeafe;color:#1d4ed8}
+
+/* ── Colors ── */
+.pos{color:#15803d}.neg{color:#dc2626}.neu{color:#64748b}
+
+/* ── Tooltip ── */
 .tt-wrap{position:relative;display:inline}
 .tt-card{display:none;position:fixed;z-index:9999;background:#1e293b;color:#f1f5f9;border-radius:8px;padding:10px 13px;font-size:11px;line-height:1.7;max-width:280px;box-shadow:0 4px 20px rgba(0,0,0,.3);pointer-events:none}
 .tt-card strong{color:#93c5fd;font-size:12px;display:block;margin-bottom:3px}
-@media(max-width:600px){.attr-row{flex-direction:column}table.t th,table.t td{padding:4px 5px;font-size:11px}}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#f1f5f9}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+
+@media(max-width:600px){
+  .attr-row{flex-direction:column}
+  .mkt-strip{flex-direction:column}
+  .mi{border-right:none;border-bottom:1px solid #f1f5f9}
+  table.t th,table.t td{padding:4px 6px;font-size:11px}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="hdr">
-    <div class="hdr-title">GC Blinkit Dashboard — 22 May '26</div>
-    <div class="hdr-sub">Be Bodywise · Man Matters · Little Joys</div>
+    <div class="hdr-title">⚡ GC Blinkit Dashboard — 22 May '26</div>
+    <div class="hdr-sub">Be Bodywise · Man Matters · Little Joys &nbsp;|&nbsp; Quick commerce intelligence</div>
   </div>
   <div class="date-strip">
     <span class="date-lbl">MTD</span><span class="date-val" id="dp-mtd"></span>
-    <span style="color:#9ca3af">vs LMTD</span>
-    <span class="date-val" id="dp-lmtd"></span>
-    <span style="margin-left:auto;font-size:10px;color:#9ca3af">WoW W2: <span id="dp-w2"></span> | W1: <span id="dp-w1"></span></span>
+    <span style="color:#94a3b8;font-size:11px">vs</span>
+    <span class="date-lbl">LMTD</span><span class="date-val" id="dp-lmtd"></span>
+    <span style="margin-left:auto;font-size:10px;color:#94a3b8">WoW W2: <span id="dp-w2" style="color:#475569;font-weight:600"></span> &nbsp;|&nbsp; W1: <span id="dp-w1" style="color:#475569;font-weight:600"></span></span>
   </div>
-  <div class="brand-tabs" id="btabs"></div>
+  <div class="btab-wrap">
+    <div class="brand-tabs" id="btabs"></div>
+  </div>
   <div class="pills" id="ppills"></div>
   <div class="cat-pills" id="cpills"></div>
   <div id="content"></div>
@@ -123,6 +218,20 @@ const fCh=(v,d=1)=>v==null?'—':(v>=0?'+':'')+v.toFixed(d)+'%';
 const clr=v=>v==null?'neu':v>0?'pos':'neg';
 const pct=(a,b)=>(b&&b!==0)?((a-b)/Math.abs(b)*100):null;
 
+// Signal emoji helper
+const sigEmoji=(v,bigThresh=0.5)=>{
+  if(v==null)return'';
+  if(v>=bigThresh)return'🟢';
+  if(v<=-bigThresh)return'🔴';
+  return'🟡';
+};
+const sigEmojiPct=(v,bigThresh=5)=>{
+  if(v==null)return'';
+  if(v>=bigThresh)return'🟢';
+  if(v<=-bigThresh)return'🔴';
+  return'🟡';
+};
+
 function init(){
   document.getElementById('dp-mtd').textContent=P.mtd;
   document.getElementById('dp-lmtd').textContent=P.lmtd;
@@ -144,7 +253,8 @@ function renderPPills(){
     const chg=(d.om&&d.ol)?d.om.share-d.ol.share:null;
     const cls=chg==null?'pn':chg>0?'pg':'pr';
     const lbl=(d.sub_cat||d.cat).replace('Underarm ','').replace(' Supplements','').replace('Exfoliator & Scrub','Scrub').replace(' Drink Mixes','').replace('Chocolate ','Choc ').replace('Kids 2-6Y','Kids 2-6').replace('Kids 7+ Yr','Kids 7+');
-    return `<span class="pill ${cls}" onclick="selectCat('${k}')">${lbl} ${chg!=null?(chg>=0?'+':'')+chg.toFixed(1)+'pp':''}</span>`;
+    const em=sigEmoji(chg,0.3);
+    return `<span class="pill ${cls}" onclick="selectCat('${k}')">${em} ${lbl} ${chg!=null?(chg>=0?'+':'')+chg.toFixed(1)+'pp':''}</span>`;
   }).join('');
 }
 function renderCPills(){
@@ -171,65 +281,70 @@ function t1(d){
 
   // ── Card header ─────────────────────────────────────────────────────
   h+=`<div class="card" data-key="${ST.cat}"><div class="card-hdr">
-    <div><span class="cat-name">${d.cat}</span><span class="brand-tag">${d.ob}</span>
-    <span style="color:#d1d5db;font-size:9px;margin-left:6px">[${ST.cat}]</span>
-    ${psc?`<span style="color:#6b7280;font-size:10px"> · Share within <b>${psc}</b></span>`:''}
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+      <span class="cat-name">${d.cat}</span>
+      <span class="brand-tag">${d.ob}</span>
+      <span style="color:#94a3b8;font-size:9px">[${ST.cat}]</span>
+      ${psc?`<span style="color:#64748b;font-size:10px">· within <b>${psc}</b></span>`:''}
     </div>
     <div class="ppu-line">
       Our PPU: <span class="ppu-ours">₹${om.ppu||'—'}/100ml</span>
-      &nbsp;·&nbsp; ${d.comp}: ₹${cm.ppu||'—'}/100ml
+      &nbsp;·&nbsp; ${d.comp}: <span style="color:#64748b;font-weight:600">₹${cm.ppu||'—'}/100ml</span>
     </div></div>`;
 
   // ── Market size strip ─────────────────────────────────────────────────
-  const schg_mkt=pct(d.mm,d.ml),swow_mkt=pct(d.mw2,d.mw1);
+  const schg_mkt=pct(d.mm,d.ml);
+  const osm_hdr=(psc&&sd[psc])?sd[psc].our_sh_mtd:om.share;
+  const osl_hdr=(psc&&sd[psc])?sd[psc].our_sh_lmtd:ol.share;
+  const sc_hdr=osm_hdr!=null&&osl_hdr!=null?osm_hdr-osl_hdr:null;
+  const wow_sc=ow2.share!=null&&ow1.share!=null?ow2.share-ow1.share:null;
   h+=`<div class="mkt-strip">
     <div class="mi">
-      <div class="lbl">Market size/day</div>
+      <div class="lbl">Market size / day</div>
       <div class="val">${fI(d.mm)}</div>
       <div class="chg ${clr(schg_mkt)}">${fCh(schg_mkt)} vs LMTD</div>
     </div>
     <div class="mi">
       <div class="lbl">Our share MTD</div>
-      <div class="val">${fP(om.share)}</div>
-      <div class="chg ${clr(om.share-(ol.share||0))}">${fPp(om.share!=null&&ol.share!=null?om.share-ol.share:null)} vs LMTD</div>
+      <div class="val">${fP(osm_hdr)} <span style="font-size:13px;font-weight:500;margin-left:3px">${sigEmoji(sc_hdr,0.3)}</span></div>
+      <div class="chg ${clr(sc_hdr)}">${fPp(sc_hdr)} vs LMTD</div>
     </div>
     <div class="mi">
-      <div class="lbl">WoW (offtake %)</div>
-      <div class="val" style="font-size:13px">`;
-  const wow_sc=ow2.share!=null&&ow1.share!=null?ow2.share-ow1.share:null;
-  h+=`<span class="${clr(wow_sc)}">${fPp(wow_sc)}</span></div>
-      <div class="chg neu">W2 ${P.w2}</div>
+      <div class="lbl">WoW signal</div>
+      <div class="val" style="font-size:16px"><span class="${clr(wow_sc)}">${fPp(wow_sc)}</span></div>
+      <div class="chg neu">W2 ${P.w2||''}</div>
+    </div>
+    <div class="mi">
+      <div class="lbl">${d.comp} share</div>
+      <div class="val" style="font-size:16px;color:#64748b">${fP(d.css_m??cm.share)}</div>
+      <div class="chg ${clr((d.css_m??cm.share)!=null&&(d.css_l??cl.share)!=null?(d.css_m??cm.share)-(d.css_l??cl.share):null)}">${fPp((d.css_m??cm.share)!=null&&(d.css_l??cl.share)!=null?(d.css_m??cm.share)-(d.css_l??cl.share):null)} vs LMTD</div>
     </div>
   </div>`;
 
   // ── Sub-cat breakdown (if available) ──────────────────────────────────
   if(psc&&sd[psc]){
     h+=`<div class="sec-lbl">Sub-category breakdown</div><div class="ov"><table class="t">
-      <tr style="background:#f9fafb">
-        <td style="font-size:10px;color:#6b7280;width:150px">Sub-cat</td>
-        <td style="font-size:10px;color:#6b7280">Mkt size/day</td>
-        <td style="font-size:10px;color:#6b7280">vs LMTD</td>
-        <td style="font-size:10px;color:#6b7280">WoW</td>
-        <td style="font-size:10px;color:#6b7280;text-align:right">Our share</td>
-        <td style="font-size:10px;color:#6b7280;text-align:right">${d.comp} share</td>
-      </tr>`;
+      <thead><tr>
+        <th style="text-align:left">Sub-cat</th>
+        <th>Mkt size/day</th><th>vs LMTD</th><th>WoW</th>
+        <th>Our share</th><th>${d.comp} share</th>
+      </tr></thead><tbody>`;
     Object.entries(sd).filter(([k])=>k!=='7+ & 2+').forEach(([sc,s])=>{
       if(!s.sz_mtd)return;
       const ip=sc===psc;
+      const shChg=s.our_sh_mtd!=null&&s.our_sh_lmtd!=null?s.our_sh_mtd-s.our_sh_lmtd:null;
       h+=`<tr ${ip?'style="background:#f0fdf4"':''}>
-        <td style="padding-left:16px;color:${ip?'#16a34a':'#6b7280'}">└ ${sc}</td>
+        <td style="padding-left:16px;color:${ip?'#16a34a':'#64748b'}">└ ${sc}</td>
         <td>${fI(s.sz_mtd)}</td>
         <td><span class="${clr(s.sz_chg)}">${fCh(s.sz_chg)}</span></td>
         <td><span class="${clr(s.sz_wow)}">${fCh(s.sz_wow??null)}</span></td>
-        <td style="text-align:right;font-size:11px">${s.our_sh_mtd?.toFixed(1)||'—'}%
-          <span class="${clr(s.our_sh_mtd-(s.our_sh_lmtd||0))}" style="font-size:10px">
-          ${fPp(s.our_sh_mtd!=null&&s.our_sh_lmtd!=null?s.our_sh_mtd-s.our_sh_lmtd:null)}</span></td>
-        <td style="text-align:right;font-size:11px;color:#6b7280">${d.css_m?.toFixed(1)||'—'}%
-          <span class="${clr(d.css_m-(d.css_l||0))}" style="font-size:10px">${fPp(d.css_m!=null&&d.css_l!=null?d.css_m-d.css_l:null)}</span></td>
+        <td style="text-align:right">${s.our_sh_mtd?.toFixed(1)||'—'}%
+          <span class="${clr(shChg)}" style="font-size:10px"> ${fPp(shChg)}</span></td>
+        <td style="text-align:right;color:#64748b">${d.css_m?.toFixed(1)||'—'}%
+          <span class="${clr(d.css_m-(d.css_l||0))}" style="font-size:10px"> ${fPp(d.css_m!=null&&d.css_l!=null?d.css_m-d.css_l:null)}</span></td>
       </tr>`;
     });
-    h+=`</table></div>`;
-
+    h+=`</tbody></table></div>`;
   }
 
   // ── Share table ───────────────────────────────────────────────────────
@@ -238,16 +353,16 @@ function t1(d){
   const csm=d.css_m??cm.share, csl=d.css_l??cl.share;
   const owow=ow2.share!=null&&ow1.share!=null?ow2.share-ow1.share:null;
   const cwow=cw2.share!=null&&cw1.share!=null?cw2.share-cw1.share:null;
-  h+=`<div class="sec-lbl">Market Share — MTD vs LMTD (offtake %)</div>
+  h+=`<div class="sec-lbl">Market Share — MTD vs LMTD</div>
     <div class="ov"><table class="t"><thead><tr>
       <th style="text-align:left;width:150px">Brand</th>
-      <th>Share MTD</th><th>vs LMTD</th><th>WoW (offtake %)</th>
+      <th>Share MTD</th><th>vs LMTD</th><th>WoW</th>
       <th>Avg off/day</th><th>Avg units/day</th><th>OSA%</th><th>Disc%</th>
     </tr></thead><tbody>
     <tr class="own">
       <td>${d.ob} <span class="ob">US</span></td>
       <td><b>${fP(osm)}</b></td>
-      <td><span class="${clr(osm!=null&&osl!=null?osm-osl:null)}" style="font-weight:bold">${fPp(osm!=null&&osl!=null?osm-osl:null)}</span></td>
+      <td><span class="${clr(osm!=null&&osl!=null?osm-osl:null)}" style="font-weight:700">${fPp(osm!=null&&osl!=null?osm-osl:null)}</span></td>
       <td><span class="${clr(owow)}">${fPp(owow)}</span></td>
       <td>${fI(om.offtake)}</td><td>${fU(om.units)}</td>
       <td>${fP(om.osa,0)}</td><td>${om.discount?.toFixed(1)||'—'}%</td>
@@ -266,156 +381,150 @@ function t1(d){
   const schg=osm!=null&&osl!=null?osm-osl:null;
   const donors=at.donors||[], gainers=at.gainers||[];
   const td=donors[0], tg=gainers[0];
-  // Build "why" clause for attribution title — uses signal deltas computed below
-  // (deltas computed early so we can reference them in atxt)
   const _oad=(om.ad_sov||0)-(ol.ad_sov||0);
   const _oor=(om.org_sov||0)-(ol.org_sov||0);
   const _osa_d=(om.osa||0)-(ol.osa||0);
   const _disc_d=(om.discount||0)-(ol.discount||0);
+
   function _whyGained(){
     if(_oad>1.5)  return ` — Ad SOV-driven (${fPp(_oad)})`;
     if(_oor>1.5)  return ` — Org SOV-driven (${fPp(_oor)})`;
     if(_osa_d>1.5)return ` — availability-driven (OSA ${fPp(_osa_d)})`;
-    if(_disc_d>0.5)return ` — discount-driven (${fPp(_disc_d)} deeper discount)`;
-    return ` — driver unclear (check signals below)`;
+    if(_disc_d>0.5)return ` — discount-driven (${fPp(_disc_d)} deeper)`;
+    return ` — driver unclear`;
   }
   function _whyLost(){
-    // Only use cd (designated comp driver) when the brand taking our share IS that comp
-    // Otherwise cd metrics describe a different brand and would be misleading
     const tgBrand=tg?tg[0]:null;
-    if(cd && cd.metric && tgBrand && tgBrand===d.comp && Math.abs(cd.delta||0)>1){
+    if(cd&&cd.metric&&tgBrand&&tgBrand===d.comp&&Math.abs(cd.delta||0)>1){
       const u=cd.metric==='OSA'||cd.metric.includes('SOV')?'%':'';
       const dir=cd.delta>0?'surged':'dropped';
       return ` — their ${cd.metric} ${dir} (${cd.lmtd}${u}→${cd.mtd}${u})`;
     }
-    // Our own degradation signals
     if(_oad<-1.5) return ` — our Ad SOV down ${fPp(_oad)}`;
     if(_oor<-1.5) return ` — our Org SOV down ${fPp(_oor)}`;
     if(_osa_d<-1.5)return ` — our OSA slipped ${fPp(_osa_d)}`;
     if(_disc_d<-0.5)return ` — our discount eased ${fPp(_disc_d)}`;
     return ` — driver unclear`;
   }
+
   let atxt='',acls='';
   if(schg!=null&&schg>0&&td){atxt=`Gained from <b>${td[0]}</b> (${fPp(-td[1])} to us)${_whyGained()}`;acls='pos';}
   else if(schg!=null&&schg<=0&&tg){atxt=`Lost to <b>${tg[0]}</b> (+${fPp(tg[1])} to them)${_whyLost()}`;acls='neg';}
-  else if(schg!=null&&schg>0){atxt=`Share gained — diffuse (no single donor above 0.1%)${_whyGained()}`;acls='pos';}
-  else{atxt=`No dominant share movement detected`;acls='neu';}
+  else if(schg!=null&&schg>0){atxt=`Share gained — diffuse${_whyGained()}`;acls='pos';}
+  else{atxt=`No dominant share movement`;acls='neu';}
 
-  // Our brand signal badges (deltas already computed above as _oad/_oor/_osa_d/_disc_d)
+  // Our metric chips
   const oad=_oad, oor=_oor, osa_d=_osa_d, disc_d=_disc_d;
-  let bdg='';
-  if(Math.abs(oad)>1.5)bdg+=`<span class="badge ${oad>0?'bg':'br'}">Ad SOV ${oad>0?'▲':'▼'} to ${om.ad_sov?.toFixed(1)}% (${fPp(oad)})</span>`;
-  if(Math.abs(oor)>1.5)bdg+=`<span class="badge ${oor>0?'bg':'by'}">Org SOV ${oor>0?'▲':'▼'} to ${om.org_sov?.toFixed(1)}% (${fPp(oor)})</span>`;
-  if(Math.abs(osa_d)>1.5)bdg+=`<span class="badge ${osa_d>0?'bg':'by'}">OSA ${osa_d>0?'improved':'declined'} to ${om.osa?.toFixed(0)}% (${fPp(osa_d)})</span>`;
-  if(disc_d>0.5)bdg+=`<span class="badge by">Discount deepened to ${om.discount?.toFixed(1)}% (${fPp(disc_d)})</span>`;
-  if(disc_d<-0.5)bdg+=`<span class="badge bb">Discount eased to ${om.discount?.toFixed(1)}% (${fPp(disc_d)})</span>`;
+  let ourChips='';
+  ourChips+=`<span class="mchip ${Math.abs(oad)>1.5?(oad>0?'up':'dn'):'neu'}">Ad SOV ${om.ad_sov?.toFixed(1)||'—'}% ${Math.abs(oad)>0.5?'('+fPp(oad)+')':''}</span>`;
+  ourChips+=`<span class="mchip ${Math.abs(oor)>1.5?(oor>0?'up':'dn'):'neu'}">Org SOV ${om.org_sov?.toFixed(1)||'—'}% ${Math.abs(oor)>0.5?'('+fPp(oor)+')':''}</span>`;
+  ourChips+=`<span class="mchip ${Math.abs(osa_d)>1.5?(osa_d>0?'up':'warn'):'neu'}">OSA ${om.osa?.toFixed(0)||'—'}% ${Math.abs(osa_d)>0.5?'('+fPp(osa_d)+')':''}</span>`;
+  ourChips+=`<span class="mchip ${Math.abs(disc_d)>0.5?(disc_d>0?'warn':'info'):'neu'}">Disc ${om.discount?.toFixed(1)||'—'}% ${Math.abs(disc_d)>0.5?'('+fPp(disc_d)+')':''}</span>`;
 
-  // Attribution sub-text — our metrics context
-  const ourCtx=`Ad SOV ${om.ad_sov?.toFixed(1)||'—'}% (was ${ol.ad_sov?.toFixed(1)||'—'}%) · Org ${om.org_sov?.toFixed(1)||'—'}% (was ${ol.org_sov?.toFixed(1)||'—'}%) · OSA ${om.osa?.toFixed(0)||'—'}% · Disc ${om.discount?.toFixed(1)||'—'}%`;
-  const noDriver=!bdg&&schg!=null&&Math.abs(schg)<0.5;
-
-  // Comp card
-  const csc=csm!=null&&csl!=null?csm-csl:null;
+  // Comp chips
+  const csc_attr=csm!=null&&csl!=null?csm-csl:null;
   const cod=(cm.osa||0)-(cl.osa||0);
   const cad=(cm.ad_sov||0)-(cl.ad_sov||0);
-  let cbdg='';
-  if(Math.abs(csc||0)>0.5)cbdg+=`<span class="badge ${csc>0?'br':'bg'}">${d.comp} share ${csc>0?'gained':'lost'} ${fPp(csc)}</span>`;
-  if(cd&&cd.metric){
-    const cdm=cd.metric,del=cd.delta||0;
-    if(Math.abs(del)>1)cbdg+=`<span class="badge ${del>0?'by':'bb'}">${cdm} ${del>0?'▲':'▼'} ${del>0?'+':''}${del.toFixed(1)} (driver)</span>`;
-  }
-  if(Math.abs(cod)>2)cbdg+=`<span class="badge ${cod>0?'br':'bg'}">Their OSA ${cod>0?'▲':'▼'} to ${cm.osa?.toFixed(0)}% (${fPp(cod)})</span>`;
-  if(Math.abs(cad)>1.5)cbdg+=`<span class="badge ${cad>0?'br':'bg'}">Their Ad SOV ${cad>0?'▲':'▼'} to ${cm.ad_sov?.toFixed(1)}% (${fPp(cad)})</span>`;
+  let compChips='';
+  if(csc_attr!=null)compChips+=`<span class="mchip ${Math.abs(csc_attr)>0.5?(csc_attr>0?'dn':'up'):'neu'}">Share ${fPp(csc_attr)} MTD</span>`;
+  compChips+=`<span class="mchip ${Math.abs(cad)>1.5?(cad>0?'dn':'up'):'neu'}">Ad SOV ${cm.ad_sov?.toFixed(1)||'—'}% ${Math.abs(cad)>0.5?'('+fPp(cad)+')':''}</span>`;
+  compChips+=`<span class="mchip ${Math.abs(cod)>2?(cod>0?'dn':'up'):'neu'}">OSA ${cm.osa?.toFixed(0)||'—'}% ${Math.abs(cod)>0.5?'('+fPp(cod)+')':''}</span>`;
+  compChips+=`<span class="mchip neu">Off/day ${fI(cm.offtake)} · ${fU(cm.units)} units</span>`;
 
+  const noDriver=!ourChips.includes('class="mchip up"')&&!ourChips.includes('class="mchip dn"')&&schg!=null&&Math.abs(schg)<0.5;
+  const atScope=at.scope?`<span style="font-size:10px;color:#64748b;font-weight:normal;margin-left:6px">(scoped to ${at.scope})</span>`:'';
 
-  // Category snapshot strip
-  const snap_sc=osm!=null&&osl!=null?osm-osl:null;
-  const snap_mc=pct(d.mm,d.ml);
-  const worst_ci=d.ci&&d.ci.length?d.ci.reduce((a,b)=>((a.our_mtd_chg||0)<(b.our_mtd_chg||0)?a:b)):null;
-  const snap_badges=[];
-  if(Math.abs(oad)>1.5)snap_badges.push(`<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:${oad>0?'#dcfce7':'#fee2e2'};color:${oad>0?'#16a34a':'#dc2626'}">Ad SOV ${oad>0?'▲':'▼'}</span>`);
-  if(Math.abs(osa_d)>1.5)snap_badges.push(`<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:${osa_d>0?'#dcfce7':'#fef3c7'};color:${osa_d>0?'#16a34a':'#d97706'}">OSA ${osa_d>0?'▲':'▼'}</span>`);
-  h+=`<div style="display:flex;gap:16px;padding:8px 14px;background:#f0f9ff;border-bottom:2px solid #bae6fd;flex-wrap:wrap;align-items:center">
-    <div style="font-size:11px">Share: <b class="${clr(snap_sc)}">${fP(osm)} (${fPp(snap_sc)})</b></div>
-    <div style="font-size:11px">Market: <b class="${clr(snap_mc)}">${fI(d.mm)}/day (${fCh(snap_mc)})</b></div>
-    <div style="font-size:11px">Comp: <b>${d.comp} — ${fP(csm)} (${fPp(csm!=null&&csl!=null?csm-csl:null)})</b></div>
-    ${worst_ci?`<div style="font-size:11px">⚠ City watch: <b>${worst_ci.city}</b> ${fPp(worst_ci.our_mtd_chg)} share</div>`:''}
-    <div style="margin-left:auto;display:flex;gap:4px">${snap_badges.join('')}</div>
-  </div>`;
-  const atScope=at.scope?`<span style="font-size:10px;color:#6b7280;font-weight:normal;margin-left:6px">(scoped to ${at.scope})</span>`:'';
   h+=`<div class="attr-row">
-    <div class="acard">
-      <div class="atitle ${acls}">${atxt}${atScope}</div>
-      <div class="asub">${ourCtx}</div>
-      ${noDriver?'<div class="asub" style="margin-top:4px;color:#d97706">⚠ No single clear driver — share change within noise range</div>':''}
-      <div class="badges">${bdg||'<span style="font-size:11px;color:#9ca3af">No signal threshold crossed</span>'}</div>
+    <div class="acard ${acls==='pos'?'pos-card':acls==='neg'?'neg-card':''}">
+      <div class="atitle ${acls}">${sigEmoji(schg,0.3)} Our Position${atScope}</div>
+      <div class="asub">${atxt}</div>
+      ${noDriver?'<div class="asub" style="margin-top:4px;color:#d97706">⚠️ No clear driver — share within noise range</div>':''}
+      <div class="metric-chips" style="margin-top:8px">${ourChips}</div>
     </div>
-    <div class="acard">
-      <div class="atitle">👁 ${d.comp} — always watch</div>
-      <div class="asub">
-        Off/day ${fI(cm.offtake)} · Units ${fU(cm.units)}/day<br>
-        OSA ${cm.osa?.toFixed(0)||'—'}% · Disc ${cm.discount?.toFixed(1)||'—'}%<br>
-        Ad SOV ${cm.ad_sov?.toFixed(1)||'—'}% (was ${cl.ad_sov?.toFixed(1)||'—'}%)
-      </div>
-      <div class="badges">${cbdg||'<span style="font-size:11px;color:#9ca3af">Holding steady</span>'}</div>
+    <div class="acard watch-card">
+      <div class="atitle" style="color:#1d4ed8">👁 ${d.comp} — always watch</div>
+      <div class="asub">Disc ${cm.discount?.toFixed(1)||'—'}%</div>
+      <div class="metric-chips" style="margin-top:8px">${compChips}</div>
     </div>
+  </div>`;
+
+  // ── Snapshot strip ────────────────────────────────────────────────────
+  const worst_ci=d.ci&&d.ci.length?d.ci.reduce((a,b)=>((a.our_mtd_chg||0)<(b.our_mtd_chg||0)?a:b)):null;
+  const snap_mc=pct(d.mm,d.ml);
+  h+=`<div class="snap-strip">
+    <div class="snap-item">
+      <div class="s-lbl">Market trend</div>
+      <div class="s-val"><span class="${clr(snap_mc)}">${fCh(snap_mc)}</span> LMTD</div>
+    </div>
+    <div class="snap-item">
+      <div class="s-lbl">Ad SOV</div>
+      <div class="s-val">${Math.abs(oad)>1.5?sigEmoji(oad,0):''}  ${om.ad_sov?.toFixed(1)||'—'}% <span style="font-size:10px;color:#64748b">${Math.abs(oad)>0.5?'('+fPp(oad)+')':''}</span></div>
+    </div>
+    <div class="snap-item">
+      <div class="s-lbl">OSA</div>
+      <div class="s-val">${Math.abs(osa_d)>1.5?sigEmoji(osa_d,0):''}  ${om.osa?.toFixed(0)||'—'}% <span style="font-size:10px;color:#64748b">${Math.abs(osa_d)>0.5?'('+fPp(osa_d)+')':''}</span></div>
+    </div>
+    ${worst_ci?`<div class="snap-item">
+      <div class="s-lbl">City watch</div>
+      <div class="s-val">⚠️ <b>${worst_ci.city}</b> <span class="neg">${fPp(worst_ci.our_mtd_chg)}</span></div>
+    </div>`:''}
   </div>`;
 
   // ── Brands outperforming us this MTD ─────────────────────────────────
   const ops=at.outperformers||[];
   if(ops.length){
     h+=`<div class="op-row">
-      <div class="op-title">⚡ Brands gaining more share than us this MTD (our gain: ${fPp(at.our_gain)})</div>`;
+      <div class="op-title">⚡ Outperforming us MTD (our gain: ${fPp(at.our_gain)})</div>`;
     ops.forEach(op=>{
       const drv=op.driver;
-      let reason='Reason unclear';
+      let reason='unclear';
       if(drv&&drv.metric){const u=drv.metric.includes('SOV')||drv.metric==='OSA'?'%':'';reason=drv.metric+' '+(drv.delta>0?'▲':'▼')+' '+drv.lmtd+u+'→'+drv.mtd+u;}
-      h+=`<span class="op-item"><b>${op.brand}</b> <span class="pos">+${op.gain.toFixed(2)}%</span> — ${reason}</span>`;
+      h+=`<span class="op-item"><b>${op.brand}</b> <span class="pos">+${op.gain.toFixed(2)}pp</span> <span style="color:#94a3b8;font-size:10px">via ${reason}</span></span>`;
     });
     h+=`</div>`;
   }
 
-  // ── Cross-channel + search ────────────────────────────────────────────
+  // ── Cross-channel ────────────────────────────────────────────────────
   const sr=d.sr||{};
   const amChg=pct(d.am,d.al),dmChg=pct(d.dm,d.dl);
   h+=`<div class="xc">
-    📡 <b>Cross-channel</b>:
-    Amz DRR ${fU(d.am)} <span class="${clr(amChg)}">${amChg!=null?fCh(amChg):''}</span> MTD
-    &nbsp;·&nbsp; D2C DRR ${fU(d.dm)} <span class="${clr(dmChg)}">${dmChg!=null?fCh(dmChg):''}</span> MTD`;
+    <div class="xc-row">
+      <span style="font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.05em">📡 Cross-channel DRR</span>
+      <span class="xc-item"><span class="xc-lbl">Amazon</span> <span class="xc-val">${fU(d.am)}</span> <span class="${clr(amChg)}">${amChg!=null?fCh(amChg):''}</span></span>
+      <span class="xc-item"><span class="xc-lbl">D2C</span> <span class="xc-val">${fU(d.dm)}</span> <span class="${clr(dmChg)}">${dmChg!=null?fCh(dmChg):''}</span></span>
+    </div>`;
   if(sr.gen_m){
-    h+=`<br>🔍 <b>Search — MTD vs LMTD</b>:
-      Generic ${sr.gen_m?.toLocaleString()||'—'}/day (LMTD ${sr.gen_l?.toLocaleString()||'—'}) <span class="${clr(sr.gen_chg)}">${sr.gen_chg!=null?fCh(sr.gen_chg,0):''}</span>
-      &nbsp;·&nbsp; Brand ${sr.brd_m?.toLocaleString()||'—'}/day (LMTD ${sr.brd_l?.toLocaleString()||'—'}) <span class="${clr(sr.brd_chg)}">${sr.brd_chg!=null?fCh(sr.brd_chg,0):''}</span>
-      &nbsp;·&nbsp; ${sr.comp||d.comp} ${sr.cmp_m?.toLocaleString()||'—'}/day <span class="${clr(sr.cmp_chg)}">${sr.cmp_chg!=null?fCh(sr.cmp_chg,0):''}</span>`;
+    h+=`<div class="xc-row" style="margin-top:6px">
+      <span style="font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.05em">🔍 Search MTD vs LMTD</span>
+      <span class="xc-item"><span class="xc-lbl">Generic</span> <span class="xc-val">${sr.gen_m?.toLocaleString()||'—'}/day</span> <span class="${clr(sr.gen_chg)}">${sr.gen_chg!=null?fCh(sr.gen_chg,0):''}</span></span>
+      <span class="xc-item"><span class="xc-lbl">Brand</span> <span class="xc-val">${sr.brd_m?.toLocaleString()||'—'}/day</span> <span class="${clr(sr.brd_chg)}">${sr.brd_chg!=null?fCh(sr.brd_chg,0):''}</span></span>
+      <span class="xc-item"><span class="xc-lbl">${sr.comp||d.comp}</span> <span class="xc-val">${sr.cmp_m?.toLocaleString()||'—'}/day</span> <span class="${clr(sr.cmp_chg)}">${sr.cmp_chg!=null?fCh(sr.cmp_chg,0):''}</span></span>
+    </div>`;
   }
   h+=`</div>`;
 
-  // ── Top SKUs — 1 own top seller + top (n-1) competitor SKUs ──────────
+  // ── Top SKUs ──────────────────────────────────────────────────────────
   const ot=d.ot||[];
   if(ot.length){
-    // Reference: our top SKU's growth rates (benchmark for red-flag logic)
     const ourRef=ot.find(s=>s.is_own)||null;
     const refMTD=ourRef?.vs_lmtd??null;
     const refWoW=ourRef?.wow??null;
-    h+=`<div class="sec-lbl">Top SKUs — ${d.cat} category · top 2 own SKUs + competitors · 🔴 beats our top seller</div>
+    h+=`<div class="sec-lbl">Top SKUs — ${d.cat} · top 2 own + competitors &nbsp;<span style="font-size:9px;background:#fee2e2;color:#dc2626;padding:1px 6px;border-radius:3px">🔴 beats our top seller</span></div>
       <div class="ov"><table class="t"><thead><tr>
         <th style="text-align:left;width:34%">SKU</th>
-        <th style="text-align:left;width:13%">Brand</th>
+        <th style="text-align:left;width:12%">Brand</th>
         <th>PPU/100ml</th><th>Avg/day</th><th>Peak/day</th><th>WoW</th><th>vs LMTD</th>
       </tr></thead><tbody>`;
     ot.forEach(s=>{
       const io=s.is_own;
-      // Red flag: competitor growing faster than our top SKU on either WoW or LMTD
       const beatsMTD=!io&&s.vs_lmtd!=null&&refMTD!=null&&s.vs_lmtd>refMTD;
       const beatsWoW=!io&&s.wow!=null&&refWoW!=null&&s.wow>refWoW;
       const warn=beatsMTD||beatsWoW;
-      const tip=`${(s.name||'')}\nBrand: ${s.brand}\nPPU: ₹${s.ppu||'?'}/100ml  SP: ₹${s.avg_sp||'?'}\nAvg/day: ${fU(s.avg)}  Peak: ${fU(s.peak)}\nWoW: ${fCh(s.wow??null)}  vs LMTD: ${fCh(s.vs_lmtd??null)}`;
-      const warnTag=warn?`<span style="font-size:9px;background:#fee2e2;color:#dc2626;padding:1px 4px;border-radius:3px;margin-left:4px">🔴 beats us</span>`:'';
+      const tip=`${(s.name||'')}\nBrand: ${s.brand}\nPPU: Rs${s.ppu||'?'}/100ml  SP: Rs${s.avg_sp||'?'}\nAvg/day: ${fU(s.avg)}  Peak: ${fU(s.peak)}\nWoW: ${fCh(s.wow??null)}  vs LMTD: ${fCh(s.vs_lmtd??null)}`;
+      const warnTag=warn?`<span style="font-size:9px;background:#fee2e2;color:#dc2626;padding:1px 5px;border-radius:3px;margin-left:4px">🔴 beats us</span>`:'';
       h+=`<tr class="${io?'own':warn?'warn':''}">
-        <td><a href="https://blinkit.com/prn/dp/prid/${s.pid}" target="_blank"
-             title="${tip}"
-             style="font-size:11px">${(s.name||'').substring(0,50)}</a>${warnTag}</td>
-        <td style="font-size:11px;${io?'color:#1d4ed8;font-weight:700':'color:#6b7280'}">${s.brand}${io?' <span style=\"font-size:9px;background:#dbeafe;color:#1d4ed8;padding:1px 4px;border-radius:3px\">★ us</span>':''}</td>
+        <td><a href="https://blinkit.com/prn/dp/prid/${s.pid}" target="_blank" title="${tip}" style="font-size:11px">${(s.name||'').substring(0,50)}</a>${warnTag}</td>
+        <td style="font-size:11px;${io?'color:#1d4ed8;font-weight:700':'color:#64748b'}">${s.brand}${io?` <span style="font-size:9px;background:#dbeafe;color:#1d4ed8;padding:1px 4px;border-radius:3px">★ us</span>`:''}</td>
         <td>₹${s.ppu||'—'}</td>
         <td><b>${fU(s.avg)}</b></td><td>${fU(s.peak)}</td>
         <td><span class="${beatsWoW&&!io?'neg':clr(s.wow)}">${fCh(s.wow??null)}</span></td>
@@ -428,7 +537,7 @@ function t1(d){
   // ── Top Brands ──────────────────────────────────────────────────────────
   const tb=(d.tb||[]);
   if(tb.length){
-    h+=`<div class="sec-lbl">Top Brands — ${d.cat} · ranked by avg Offtake/day (MTD)</div>
+    h+=`<div class="sec-lbl">Top Brands — ${d.cat} · ranked by Offtake/day MTD</div>
       <div class="ov"><table class="t"><thead><tr>
         <th style="text-align:left;width:26%">Brand</th>
         <th>Share MTD</th><th>vs LMTD</th>
@@ -459,53 +568,55 @@ function t1(d){
   const awItems=wl.filter(w=>w.always_watch);
   const challPrem=wl.filter(w=>!w.always_watch&&!w.mass).sort((a,b)=>a.dist-b.dist);
   const challMass=wl.filter(w=>!w.always_watch&&w.mass).sort((a,b)=>a.dist-b.dist);
-  const woTbl=(items,lbl,isAw=false)=>{
+  const woTbl=(items,lbl,type='mass')=>{
     if(!items.length)return'';
-    return`<div class="wo-gl">${lbl}</div>
-      <div class="ov"><table class="t"><thead><tr>
+    const isAw=type==='aw';
+    const icon=isAw?'👁':type==='prem'?'⚡':'🔻';
+    const meta=isAw?`${items.length} SKU tracked`:
+                type==='prem'?`${items.length} premium challengers`:
+                `${items.length} mass brands`;
+    return`<div class="wo-gl ${type}">${icon} ${lbl}<span class="wo-meta">${meta}</span></div>
+      <div class="ov wo-tbl-${type}"><table class="t"><thead><tr>
         <th style="text-align:left;width:36%">SKU</th>
         <th style="text-align:left;width:11%">Brand</th>
         <th>PPU/100ml</th><th>Avg SP</th><th>DRR/day</th><th>Peak/day</th>
         <th>MTD vs LMTD</th>
       </tr></thead><tbody>
-      ${items.map(w=>`<tr${isAw?' style="background:#eff6ff"':''}>
-        <td><a href="https://blinkit.com/prn/dp/prid/${w.pid}" target="_blank" style="font-size:11px">${(w.name||'').substring(0,48)}</a></td>
-        <td style="font-size:11px;color:${isAw?'#1d4ed8':'#6b7280'};font-weight:${isAw?'600':'normal'}">${w.brand}${isAw?'<span style="font-size:9px;background:#dbeafe;color:#1d4ed8;padding:1px 4px;border-radius:3px;margin-left:4px">👁</span>':''}</td>
+      ${items.map(w=>`<tr>
+        <td><a href="https://blinkit.com/prn/dp/prid/${w.pid}" target="_blank" style="font-size:11px;font-weight:${isAw?'600':'400'}">${(w.name||'').substring(0,48)}</a></td>
+        <td style="font-size:11px;color:${isAw?'#1d4ed8':type==='prem'?'#92400e':'#64748b'};font-weight:600">${w.brand}${isAw?`<span style="font-size:9px;background:#dbeafe;color:#1d4ed8;padding:1px 4px;border-radius:3px;margin-left:4px">👁</span>`:''}</td>
         <td>₹${w.ppu||'—'}</td>
         <td>₹${w.avg_sp||'—'}</td>
-        <td>${fU(w.u_m)}</td><td>${fU(w.peak)||'—'}</td>
-        <td><span class="${clr(w.gr)}">${fCh(w.gr??null)}</span></td>
+        <td><b>${fU(w.u_m)}</b></td><td>${fU(w.peak)||'—'}</td>
+        <td><span class="${clr(w.gr)}" style="font-weight:700">${fCh(w.gr??null)}</span></td>
       </tr>`).join('')}
       </tbody></table></div>`;
   };
   if(wl.length){
-    h+=`<div class="sec-lbl">Watch Out — 👁 <b>${d.comp}</b> always tracked · Others: growing faster than us (DRR ≥ 30) · Our PPU: ₹${om.ppu||'—'}/100ml</div>`;
-    if(awItems.length)h+=woTbl(awItems,`👁 ${d.comp} — always watch (every MTD)`,true);
-    if(challPrem.length)h+=woTbl(challPrem,'Premium challengers growing faster than us (PPU ≥ 60% of ours)');
-    if(challMass.length)h+=woTbl(challMass,'Mass brands growing faster than us (PPU < 60% of ours)');
+    h+=`<div class="sec-lbl">Watch Out — 👁 <b>${d.comp}</b> always tracked · Others: DRR ≥ 30 &amp; growing faster · Our PPU ₹${om.ppu||'—'}/100ml</div>`;
+    if(awItems.length)h+=woTbl(awItems,`${d.comp} — Always Watch`,'aw');
+    if(challPrem.length)h+=woTbl(challPrem,'Premium Challengers — Growing Faster Than Us','prem');
+    if(challMass.length)h+=woTbl(challMass,'Mass Brands — Growing Faster Than Us','mass');
   }
 
   // ── City anomalies ──────────────────────────────────────────────────────
   const ci=(d.ci||[]).slice(0,8);
   if(ci.length){
-    const FLAG_TXT={green:'🔺 We are gaining',red:'🔻 We are losing',orange:'⚠ Comp gaining',blue:'✅ Comp retreating'};
-    h+=`<div class="sec-lbl">City Anomalies — share pp change by city (MTD vs LMTD), ranked by Pan India %</div>
-      <div class="ov"><table class="t"><thead><tr>
-        <th style="text-align:left;width:18%">City</th>
-        <th>Pan India %</th><th>Our share chg</th>
-        <th>${d.comp} share shift</th><th style="text-align:left">Status</th>
-      </tr></thead><tbody>
-      ${ci.map(c=>`<tr>
-        <td style="font-weight:bold">${c.city}</td>
-        <td>${c.mkt_pct?.toFixed(1)||'—'}% of market</td>
-        <td><span class="${clr(c.our_mtd_chg)}">${fPp(c.our_mtd_chg)}</span> <span style='font-size:10px;color:#6b7280'>(${c.our_share_mtd?.toFixed(1)||'—'}%)</span></td>
-        <td><span class="${clr(c.comp_shift)}">${fPp(c.comp_shift)}</span></td>
-        <td><span style="font-size:10px;padding:2px 7px;border-radius:4px;
-          background:${c.flag==='green'?'#dcfce7':c.flag==='red'?'#fee2e2':'#fef3c7'};
-          color:${c.flag==='green'?'#16a34a':c.flag==='red'?'#dc2626':'#d97706'}">
-          ${FLAG_TXT[c.flag]||c.flag}</span></td>
-      </tr>`).join('')}
-      </tbody></table></div>`;
+    const FLAG_TXT={green:'🔺 We are gaining',red:'🔻 We are losing',orange:'⚠️ Comp gaining',blue:'✅ Comp retreating'};
+    h+=`<div class="sec-lbl">City Signals — share pp change MTD vs LMTD</div>
+    <div class="city-grid">`;
+    ci.forEach(c=>{
+      h+=`<div class="city-card ${c.flag||''}">
+        <div class="city-name">${c.city}</div>
+        <div class="city-meta">
+          Our share: <b><span class="${clr(c.our_mtd_chg)}">${fPp(c.our_mtd_chg)}</span></b>
+          <span style="color:#94a3b8">(${c.our_share_mtd?.toFixed(1)||'—'}%)</span><br>
+          ${d.comp}: <span class="${clr(c.comp_shift)}">${fPp(c.comp_shift)}</span>
+        </div>
+        <span class="city-flag ${c.flag||''}">${FLAG_TXT[c.flag]||c.flag||'—'}</span>
+      </div>`;
+    });
+    h+=`</div>`;
   }
 
   h+=`</div>`;return h;
@@ -520,22 +631,24 @@ function t2(d){
   const ws=wd!=null&&sc!=null?(wd>sc+0.5?'ACCEL':wd<sc-0.5?'DECEL':'STABLE'):null;
   const ot=d.ot||[],top=ot[0];
   let h=`<div class="card"><div class="card-hdr">
-    <div><span class="cat-name">${d.cat}</span><span class="brand-tag">${d.ob}</span></div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <span class="cat-name">${d.cat}</span><span class="brand-tag">${d.ob}</span>
+    </div>
     <div class="ppu-line">Our PPU: <span class="ppu-ours">₹${om.ppu||'—'}/100ml</span>
-    &nbsp;·&nbsp; ${d.comp}: ₹${cm.ppu||'—'}/100ml</div></div>
+    &nbsp;·&nbsp; ${d.comp}: <span style="font-weight:600">₹${cm.ppu||'—'}/100ml</span></div></div>
     <div class="mkt-strip">
       <div class="mi"><div class="lbl">Market/day</div><div class="val">${fI(d.mm)}</div>
         <div class="chg ${clr(pct(d.mm,d.ml))}">${fCh(pct(d.mm,d.ml))} vs LMTD</div></div>
-      <div class="mi"><div class="lbl">Our share MTD</div><div class="val">${fP(om.share)}</div>
+      <div class="mi"><div class="lbl">Our share MTD</div><div class="val">${fP(om.share)} ${sigEmoji(sc,0.3)}</div>
         <div class="chg ${clr(sc)}">${fPp(sc)} vs LMTD</div></div>
       <div class="mi"><div class="lbl">WoW signal</div>
-        <div class="val" style="font-size:13px;color:${ws==='ACCEL'?'#16a34a':ws==='DECEL'?'#dc2626':'#6b7280'}">${ws||'—'}</div>
+        <div class="val" style="font-size:15px;color:${ws==='ACCEL'?'#15803d':ws==='DECEL'?'#dc2626':'#64748b'}">${ws||'—'}</div>
         <div class="chg neu">WoW ${fPp(wd)} vs MTD ${fPp(sc)}</div></div>
     </div>
     <div class="sec-lbl">Market Share (offtake %)</div>
     <div class="ov"><table class="t"><thead><tr>
       <th style="text-align:left;width:150px">Brand</th>
-      <th>Share MTD</th><th>vs LMTD</th><th>WoW (offtake %)</th>
+      <th>Share MTD</th><th>vs LMTD</th><th>WoW</th>
       <th>Off/day</th><th>Units/day</th>
     </tr></thead><tbody>
     <tr class="own"><td>${d.ob} <span class="ob">US</span></td>
@@ -549,17 +662,24 @@ function t2(d){
       <td>—</td>
       <td>${fI(cm.offtake)}</td><td>${fU(cm.units)}</td></tr>
     </tbody></table></div>
-    ${top?`<div style="padding:8px 14px;border-bottom:1px solid #e5e7eb;font-size:11px">
+    ${top?`<div style="padding:8px 16px;border-bottom:1px solid #e2e8f0;font-size:11px;background:#f8fafc">
       🏆 <b>Top SKU</b>: <a href="https://blinkit.com/prn/dp/prid/${top.pid}" target="_blank">${top.name}</a>
       — ${fU(top.avg)}/day
       <span class="${clr(top.vs_lmtd)}">${fCh(top.vs_lmtd)} vs LMTD</span>
       | WoW <span class="${clr(top.wow)}">${fCh(top.wow)}</span>
     </div>`:''}
-    <div class="xc">📡 <b>Cross-channel</b>:
-      Amz ${fU(d.am)} <span class="${clr(pct(d.am,d.al))}">${d.am&&d.al?fCh(pct(d.am,d.al)):''}</span> MTD
-      &nbsp;·&nbsp; D2C ${fU(d.dm)} <span class="${clr(pct(d.dm,d.dl))}">${d.dm&&d.dl?fCh(pct(d.dm,d.dl)):''}</span> MTD
-      ${sr.gen_m?`<br>🔍 <b>Search MTD vs LMTD</b>: Generic ${sr.gen_m?.toLocaleString()}/day <span class="${clr(sr.gen_chg)}">${sr.gen_chg!=null?fCh(sr.gen_chg,0):''}</span>
-      ${sr.brd_m>0?`· Brand ${sr.brd_m?.toLocaleString()}/day <span class="${clr(sr.brd_chg)}">${sr.brd_chg!=null?fCh(sr.brd_chg,0):''}</span>`:''}`:''}</div>`;
+    <div class="xc">
+      <div class="xc-row">
+        <span style="font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.05em">📡 Cross-channel DRR</span>
+        <span class="xc-item"><span class="xc-lbl">Amazon</span> <span class="xc-val">${fU(d.am)}</span> <span class="${clr(pct(d.am,d.al))}">${d.am&&d.al?fCh(pct(d.am,d.al)):''}</span></span>
+        <span class="xc-item"><span class="xc-lbl">D2C</span> <span class="xc-val">${fU(d.dm)}</span> <span class="${clr(pct(d.dm,d.dl))}">${d.dm&&d.dl?fCh(pct(d.dm,d.dl)):''}</span></span>
+      </div>
+      ${sr.gen_m?`<div class="xc-row" style="margin-top:6px">
+        <span style="font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.05em">Search MTD vs LMTD</span>
+        <span class="xc-item"><span class="xc-lbl">Generic</span> <span class="xc-val">${sr.gen_m?.toLocaleString()}/day</span> <span class="${clr(sr.gen_chg)}">${sr.gen_chg!=null?fCh(sr.gen_chg,0):''}</span></span>
+        ${sr.brd_m>0?`<span class="xc-item"><span class="xc-lbl">Brand</span> <span class="xc-val">${sr.brd_m?.toLocaleString()}/day</span> <span class="${clr(sr.brd_chg)}">${sr.brd_chg!=null?fCh(sr.brd_chg,0):''}</span></span>`:''}
+      </div>`:''}
+    </div>`;
   return h;
 }
 
