@@ -183,6 +183,13 @@ table.t tr.own:hover{background:#dbeafe}
   <div class="btab-wrap">
     <div class="brand-tabs" id="btabs"></div>
   </div>
+  <div style="padding:4px 16px 6px;display:flex;align-items:center;gap:8px;background:#f8fafc;border-bottom:1px solid #e2e8f0">
+    <span style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.06em">🔍</span>
+    <input id="sku-search" type="text" placeholder="Search SKU name or Product ID…"
+      style="flex:1;border:1px solid #e2e8f0;border-radius:6px;padding:5px 10px;font-size:12px;color:#334155;outline:none;background:#fff"
+      oninput="handleSearch(this.value)" />
+    <div id="search-results" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:200;background:#fff;border:1px solid #e2e8f0;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.1);max-height:280px;overflow-y:auto;margin:2px 16px 0"></div>
+  </div>
   <div class="pills" id="ppills"></div>
   <div class="cat-pills" id="cpills"></div>
   <div id="content"></div>
@@ -511,9 +518,9 @@ function t1(d){
     const refWoW=ourRef?.wow??null;
     h+=`<div class="sec-lbl">Top SKUs — ${d.cat} · top 2 own + competitors &nbsp;<span style="font-size:9px;background:#fee2e2;color:#dc2626;padding:1px 6px;border-radius:3px">🔴 beats our top seller</span></div>
       <div class="ov"><table class="t"><thead><tr>
-        <th style="text-align:left;width:34%">SKU</th>
-        <th style="text-align:left;width:12%">Brand</th>
-        <th>PPU/100ml</th><th>Avg/day</th><th>Peak/day</th><th>WoW</th><th>vs LMTD</th>
+        <th style="text-align:left;width:32%">SKU</th>
+        <th style="text-align:left;width:11%">Brand</th>
+        <th>PPU/100ml</th><th>Mkt Sh%</th><th>Avg/day</th><th>Peak/day</th><th>WoW</th><th>vs LMTD</th>
       </tr></thead><tbody>`;
     ot.forEach(s=>{
       const io=s.is_own;
@@ -526,6 +533,7 @@ function t1(d){
         <td><a href="https://blinkit.com/prn/dp/prid/${s.pid}" target="_blank" title="${tip}" style="font-size:11px">${(s.name||'').substring(0,50)}</a>${warnTag}</td>
         <td style="font-size:11px;${io?'color:#1d4ed8;font-weight:700':'color:#64748b'}">${s.brand}${io?` <span style="font-size:9px;background:#dbeafe;color:#1d4ed8;padding:1px 4px;border-radius:3px">★ us</span>`:''}</td>
         <td>₹${s.ppu||'—'}</td>
+        <td>${s.mkt_sh!=null&&s.mkt_sh>0?'<b>'+s.mkt_sh.toFixed(1)+'%</b>':'—'}</td>
         <td><b>${fU(s.avg)}</b></td><td>${fU(s.peak)}</td>
         <td><span class="${beatsWoW&&!io?'neg':clr(s.wow)}">${fCh(s.wow??null)}</span></td>
         <td><span class="${beatsMTD&&!io?'neg':clr(s.vs_lmtd)}">${fCh(s.vs_lmtd??null)}</span></td>
@@ -539,10 +547,13 @@ function t1(d){
   if(tb.length){
     h+=`<div class="sec-lbl">Top Brands — ${d.cat} · ranked by Offtake/day MTD</div>
       <div class="ov"><table class="t"><thead><tr>
-        <th style="text-align:left;width:26%">Brand</th>
+        <th style="text-align:left;width:22%">Brand</th>
         <th>Share MTD</th><th>vs LMTD</th>
-        <th>Off/day MTD</th><th>vs LMTD</th>
-        <th>Units/day</th><th>OSA%</th><th>PPU/100ml</th>
+        <th>Off/day</th><th>vs LMTD</th>
+        <th>Units/day</th><th>Units Δ</th>
+        <th>OSA%</th><th>OSA Δ</th>
+        <th>Ad SOV</th><th>Ad SOV Δ</th>
+        <th>PPU/100ml</th>
       </tr></thead><tbody>`;
     tb.forEach(b=>{
       const sc=b.share_mtd!=null&&b.share_lmtd!=null?b.share_mtd-b.share_lmtd:null;
@@ -556,7 +567,11 @@ function t1(d){
         <td>${fI(b.off_mtd)}</td>
         <td><span class="${clr(oc)}">${fCh(oc)}</span></td>
         <td>${fU(b.units_mtd)}</td>
+        <td><span class="${clr(pct(b.units_mtd,b.units_lmtd))}" style="font-size:10px">${b.units_lmtd?fCh(pct(b.units_mtd,b.units_lmtd)):'—'}</span></td>
         <td>${fP(b.osa,0)}</td>
+        <td><span class="${clr(b.osa!=null&&b.osa_lmtd!=null?b.osa-b.osa_lmtd:null)}" style="font-size:10px">${b.osa_lmtd?fPp(b.osa-b.osa_lmtd):'—'}</span></td>
+        <td>${b.ad_sov_mtd!=null?b.ad_sov_mtd.toFixed(1)+'%':'—'}</td>
+        <td><span class="${clr(b.ad_sov_mtd!=null&&b.ad_sov_lmtd!=null?b.ad_sov_mtd-b.ad_sov_lmtd:null)}" style="font-size:10px">${b.ad_sov_lmtd!=null?fPp(b.ad_sov_mtd-b.ad_sov_lmtd):'—'}</span></td>
         <td>₹${b.ppu||'—'}</td>
       </tr>`;
     });
@@ -684,5 +699,50 @@ function t2(d){
 }
 
 function renderSummary(){}
+
+// ── Search ────────────────────────────────────────────────────────────────
+const SKU_INDEX=(()=>{
+  const idx=[];
+  Object.values(DATA).forEach(d=>{
+    (d.ot||[]).forEach(s=>{
+      idx.push({pid:s.pid,name:(s.name||'').toLowerCase(),brand:(s.brand||'').toLowerCase(),
+                display:s.name,dispBrand:s.brand,cat:d.cat,ob:d.ob,
+                avg:s.avg,ppu:s.ppu,mkt_sh:s.mkt_sh,is_own:s.is_own});
+    });
+    (d.wl||[]).forEach(s=>{
+      if(!idx.find(x=>x.pid===String(s.pid)))
+        idx.push({pid:String(s.pid),name:(s.name||'').toLowerCase(),brand:(s.brand||'').toLowerCase(),
+                  display:s.name,dispBrand:s.brand,cat:d.cat,ob:d.ob,
+                  avg:s.u_m,ppu:s.ppu,mkt_sh:null,is_own:false});
+    });
+  });
+  return idx;
+})();
+
+function handleSearch(q){
+  const box=document.getElementById('search-results');
+  q=q.trim().toLowerCase();
+  if(!q){box.style.display='none';return;}
+  const hits=SKU_INDEX.filter(s=>s.name.includes(q)||s.pid===q||s.brand.includes(q)).slice(0,12);
+  if(!hits.length){box.innerHTML='<div style="padding:10px 14px;font-size:12px;color:#94a3b8">No results</div>';box.style.display='block';return;}
+  box.innerHTML=hits.map(s=>`
+    <a href="https://blinkit.com/prn/dp/prid/${s.pid}" target="_blank"
+       style="display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid #f1f5f9;text-decoration:none;color:inherit">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:600;color:${s.is_own?'#1d4ed8':'#0f172a'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.display}</div>
+        <div style="font-size:10px;color:#64748b">${s.dispBrand} · ${s.cat} · PID ${s.pid}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        ${s.avg?`<div style="font-size:11px;font-weight:700">${fU(s.avg)}/day</div>`:''}
+        ${s.mkt_sh?`<div style="font-size:10px;color:#64748b">${s.mkt_sh.toFixed(1)}% mkt sh</div>`:''}
+        ${s.ppu?`<div style="font-size:10px;color:#94a3b8">₹${s.ppu}/100ml</div>`:''}
+      </div>
+    </a>`).join('');
+  box.style.display='block';
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#sku-search')&&!e.target.closest('#search-results'))
+    document.getElementById('search-results').style.display='none';
+});
 window.onload=init;
 </script></body></html>
