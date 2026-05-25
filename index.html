@@ -549,7 +549,7 @@ function t1(d){
   // ── Cross-Channel DRR (own SKUs only) ─────────────────────────────────
   const ownSkus=ot.filter(s=>s.is_own&&(s.blinkit_drr||s.amz_drr||s.amz_now||s.webapp_drr));
   if(ownSkus.length){
-    h+=`<div class="sec-lbl" style="margin-top:8px;background:linear-gradient(90deg,#eff6ff,#f8fafc)">📡 Cross-Channel DRR — \${d.cat} · own SKUs vs LMTD <span style="font-size:9px;color:#64748b;font-weight:normal">(Tableau-sourced daily run rate)</span></div>
+    h+=`<div class="sec-lbl" style="margin-top:8px;background:linear-gradient(90deg,#eff6ff,#f8fafc)">📡 Cross-Channel DRR — ${d.cat} · own SKUs vs LMTD <span style="font-size:9px;color:#64748b;font-weight:normal">(Tableau-sourced daily run rate)</span></div>
       <div class="ov"><table class="t"><thead><tr>
         <th style="text-align:left;width:40%">SKU</th>
         <th>Blinkit</th><th>BL Δ</th>
@@ -559,15 +559,15 @@ function t1(d){
       </tr></thead><tbody>`;
     ownSkus.forEach(s=>{
       h+=`<tr class="own">
-        <td style="font-size:11px;color:#1d4ed8;font-weight:600">\${(s.name||'').substring(0,60)}</td>
-        <td>\${s.blinkit_drr?'<b>'+fU(s.blinkit_drr)+'</b>':'—'}</td>
-        <td>\${s.blinkit_drr&&s.blinkit_drr_l?'<span class="'+clr(pct(s.blinkit_drr,s.blinkit_drr_l))+'">'+fCh(pct(s.blinkit_drr,s.blinkit_drr_l))+'</span>':'—'}</td>
-        <td>\${s.amz_drr?'<b>'+fU(s.amz_drr)+'</b>':'—'}</td>
-        <td>\${s.amz_drr&&s.amz_drr_l?'<span class="'+clr(pct(s.amz_drr,s.amz_drr_l))+'">'+fCh(pct(s.amz_drr,s.amz_drr_l))+'</span>':'—'}</td>
-        <td>\${s.amz_now?'<b>'+fU(s.amz_now)+'</b>':'—'}</td>
-        <td>\${s.amz_now&&s.amz_now_l?'<span class="'+clr(pct(s.amz_now,s.amz_now_l))+'">'+fCh(pct(s.amz_now,s.amz_now_l))+'</span>':'—'}</td>
-        <td>\${s.webapp_drr?'<b>'+fU(s.webapp_drr)+'</b>':'—'}</td>
-        <td>\${s.webapp_drr&&s.webapp_l?'<span class="'+clr(pct(s.webapp_drr,s.webapp_l))+'">'+fCh(pct(s.webapp_drr,s.webapp_l))+'</span>':'—'}</td>
+        <td style="font-size:11px;color:#1d4ed8;font-weight:600">${(s.name||'').substring(0,60)}</td>
+        <td>${s.blinkit_drr?'<b>'+fU(s.blinkit_drr)+'</b>':'—'}</td>
+        <td>${s.blinkit_drr&&s.blinkit_drr_l?'<span class="'+clr(pct(s.blinkit_drr,s.blinkit_drr_l))+'">'+fCh(pct(s.blinkit_drr,s.blinkit_drr_l))+'</span>':'—'}</td>
+        <td>${s.amz_drr?'<b>'+fU(s.amz_drr)+'</b>':'—'}</td>
+        <td>${s.amz_drr&&s.amz_drr_l?'<span class="'+clr(pct(s.amz_drr,s.amz_drr_l))+'">'+fCh(pct(s.amz_drr,s.amz_drr_l))+'</span>':'—'}</td>
+        <td>${s.amz_now?'<b>'+fU(s.amz_now)+'</b>':'—'}</td>
+        <td>${s.amz_now&&s.amz_now_l?'<span class="'+clr(pct(s.amz_now,s.amz_now_l))+'">'+fCh(pct(s.amz_now,s.amz_now_l))+'</span>':'—'}</td>
+        <td>${s.webapp_drr?'<b>'+fU(s.webapp_drr)+'</b>':'—'}</td>
+        <td>${s.webapp_drr&&s.webapp_l?'<span class="'+clr(pct(s.webapp_drr,s.webapp_l))+'">'+fCh(pct(s.webapp_drr,s.webapp_l))+'</span>':'—'}</td>
       </tr>`;
     });
     h+=`</tbody></table></div>`;
@@ -738,7 +738,7 @@ const SKU_INDEX=(()=>{
   const idx=[];
   Object.values(DATA).forEach(d=>{
     (d.ot||[]).forEach(s=>{
-      idx.push({pid:s.pid,name:(s.name||'').toLowerCase(),brand:(s.brand||'').toLowerCase(),
+      idx.push({pid:String(s.pid),name:(s.name||'').toLowerCase(),brand:(s.brand||'').toLowerCase(),
                 display:s.name,dispBrand:s.brand,cat:d.cat,ob:d.ob,
                 avg:s.avg,ppu:s.ppu,mkt_sh:s.mkt_sh,vs_lmtd:s.vs_lmtd??null,wow:s.wow??null,is_own:s.is_own});
     });
@@ -756,14 +756,18 @@ function handleSearch(q){
   const box=document.getElementById('search-results');
   q=q.trim().toLowerCase();
   if(!q){box.style.display='none';return;}
-  // Scope to active category — if category is selected, only show SKUs from that cat
+  // Scope to active category; fall back to global if no results in cat
   const activeCat=ST&&ST.cat&&DATA[ST.cat]?DATA[ST.cat].cat:null;
-  const hits=SKU_INDEX.filter(s=>{
-    if(activeCat&&s.cat!==activeCat)return false;
-    return s.name.includes(q)||s.pid===q||s.brand.includes(q);
-  }).slice(0,12);
+  const matchFn=s=>s.name.includes(q)||s.pid===q||s.brand.includes(q);
+  let hits=activeCat?SKU_INDEX.filter(s=>s.cat===activeCat&&matchFn(s)).slice(0,12):[];
+  let scopeNote='';
+  if(activeCat&&hits.length===0){
+    hits=SKU_INDEX.filter(matchFn).slice(0,12);
+    scopeNote=hits.length?`<div style="padding:4px 12px;font-size:10px;color:#64748b;background:#f8fafc;border-bottom:1px solid #e2e8f0">No results in <b>${activeCat}</b> — showing all categories</div>`:'';
+  }
+  if(!activeCat)hits=SKU_INDEX.filter(matchFn).slice(0,12);
   if(!hits.length){box.innerHTML='<div style="padding:10px 14px;font-size:12px;color:#94a3b8">No results</div>';box.style.display='block';return;}
-  box.innerHTML='<div style="padding:6px 8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px">'+hits.map(s=>{
+  box.innerHTML=scopeNote+'<div style="padding:6px 8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px">'+hits.map(s=>{
     const mtdClr=s.vs_lmtd==null?'#94a3b8':s.vs_lmtd>=5?'#16a34a':s.vs_lmtd>0?'#65a30d':s.vs_lmtd>-5?'#d97706':'#dc2626';
     const mtdTxt=s.vs_lmtd!=null?(s.vs_lmtd>=0?'+':'')+s.vs_lmtd.toFixed(1)+'% MTD':'—';
     const wowTxt=s.wow!=null?(s.wow>=0?'+':'')+s.wow.toFixed(1)+'% WoW':'—';
