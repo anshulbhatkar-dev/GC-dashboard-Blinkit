@@ -542,23 +542,23 @@ function t1(d){
         <td><b>${fU(s.avg)}</b></td><td>${fU(s.peak)}</td>
         <td><span class="${beatsWoW&&!io?'neg':clr(s.wow)}">${fCh(s.wow??null)}</span></td>
         <td><span class="${beatsMTD&&!io?'neg':clr(s.vs_lmtd)}">${fCh(s.vs_lmtd??null)}</span></td>
-      </tr>\`;
+      </tr>`;
     });
-    h+=\`</tbody></table></div>\`;
+    h+=`</tbody></table></div>`;
 
   // ── Cross-Channel DRR (own SKUs only) ─────────────────────────────────
   const ownSkus=ot.filter(s=>s.is_own&&(s.blinkit_drr||s.amz_drr||s.amz_now||s.webapp_drr));
   if(ownSkus.length){
-    h+=\`<div class="sec-lbl" style="margin-top:8px;background:linear-gradient(90deg,#eff6ff,#f8fafc)">📡 Cross-Channel DRR — \${d.cat} · own SKUs vs LMTD <span style="font-size:9px;color:#64748b;font-weight:normal">(Tableau-sourced daily run rate)</span></div>
+    h+=`<div class="sec-lbl" style="margin-top:8px;background:linear-gradient(90deg,#eff6ff,#f8fafc)">📡 Cross-Channel DRR — \${d.cat} · own SKUs vs LMTD <span style="font-size:9px;color:#64748b;font-weight:normal">(Tableau-sourced daily run rate)</span></div>
       <div class="ov"><table class="t"><thead><tr>
         <th style="text-align:left;width:40%">SKU</th>
         <th>Blinkit</th><th>BL Δ</th>
         <th>Amazon</th><th>AZ Δ</th>
         <th>AZ Now</th><th>AZ Now Δ</th>
         <th>WebApp</th><th>Web Δ</th>
-      </tr></thead><tbody>\`;
+      </tr></thead><tbody>`;
     ownSkus.forEach(s=>{
-      h+=\`<tr class="own">
+      h+=`<tr class="own">
         <td style="font-size:11px;color:#1d4ed8;font-weight:600">\${(s.name||'').substring(0,60)}</td>
         <td>\${s.blinkit_drr?'<b>'+fU(s.blinkit_drr)+'</b>':'—'}</td>
         <td>\${s.blinkit_drr&&s.blinkit_drr_l?'<span class="'+clr(pct(s.blinkit_drr,s.blinkit_drr_l))+'">'+fCh(pct(s.blinkit_drr,s.blinkit_drr_l))+'</span>':'—'}</td>
@@ -568,9 +568,9 @@ function t1(d){
         <td>\${s.amz_now&&s.amz_now_l?'<span class="'+clr(pct(s.amz_now,s.amz_now_l))+'">'+fCh(pct(s.amz_now,s.amz_now_l))+'</span>':'—'}</td>
         <td>\${s.webapp_drr?'<b>'+fU(s.webapp_drr)+'</b>':'—'}</td>
         <td>\${s.webapp_drr&&s.webapp_l?'<span class="'+clr(pct(s.webapp_drr,s.webapp_l))+'">'+fCh(pct(s.webapp_drr,s.webapp_l))+'</span>':'—'}</td>
-      </tr>\`;
+      </tr>`;
     });
-    h+=\`</tbody></table></div>\`;
+    h+=`</tbody></table></div>`;
   }
   }
 
@@ -756,7 +756,12 @@ function handleSearch(q){
   const box=document.getElementById('search-results');
   q=q.trim().toLowerCase();
   if(!q){box.style.display='none';return;}
-  const hits=SKU_INDEX.filter(s=>s.name.includes(q)||s.pid===q||s.brand.includes(q)).slice(0,12);
+  // Scope to active category — if category is selected, only show SKUs from that cat
+  const activeCat=ST&&ST.cat&&DATA[ST.cat]?DATA[ST.cat].cat:null;
+  const hits=SKU_INDEX.filter(s=>{
+    if(activeCat&&s.cat!==activeCat)return false;
+    return s.name.includes(q)||s.pid===q||s.brand.includes(q);
+  }).slice(0,12);
   if(!hits.length){box.innerHTML='<div style="padding:10px 14px;font-size:12px;color:#94a3b8">No results</div>';box.style.display='block';return;}
   box.innerHTML='<div style="padding:6px 8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px">'+hits.map(s=>{
     const mtdClr=s.vs_lmtd==null?'#94a3b8':s.vs_lmtd>=5?'#16a34a':s.vs_lmtd>0?'#65a30d':s.vs_lmtd>-5?'#d97706':'#dc2626';
