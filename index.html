@@ -561,7 +561,7 @@ function t1(d){
       h+=`<tr class="own">
         <td style="font-size:11px;color:#1d4ed8;font-weight:600">${(s.name||'').substring(0,60)}</td>
         <td>${s.blinkit_drr?'<b>'+fU(s.blinkit_drr)+'</b>':'—'}</td>
-        <td>${s.blinkit_drr&&s.blinkit_drr_l?'<span class="'+clr(pct(s.blinkit_drr,s.blinkit_drr_l))+'">'+fCh(pct(s.blinkit_drr,s.blinkit_drr_l))+'</span>':'—'}</td>
+        <td>${s.blinkit_drr&&s.blinkit_l?'<span class="'+clr(pct(s.blinkit_drr,s.blinkit_l))+'">'+fCh(pct(s.blinkit_drr,s.blinkit_l))+'</span>':'—'}</td>
         <td>${s.amz_drr?'<b>'+fU(s.amz_drr)+'</b>':'—'}</td>
         <td>${s.amz_drr&&s.amz_drr_l?'<span class="'+clr(pct(s.amz_drr,s.amz_drr_l))+'">'+fCh(pct(s.amz_drr,s.amz_drr_l))+'</span>':'—'}</td>
         <td>${s.amz_now?'<b>'+fU(s.amz_now)+'</b>':'—'}</td>
@@ -572,7 +572,7 @@ function t1(d){
     });
     // Totals row
     const tBL=ownSkus.reduce((a,s)=>a+(s.blinkit_drr||0),0);
-    const tBLl=ownSkus.reduce((a,s)=>a+(s.blinkit_drr_l||0),0);
+    const tBLl=ownSkus.reduce((a,s)=>a+(s.blinkit_l||0),0);
     const tAZ=ownSkus.reduce((a,s)=>a+(s.amz_drr||0),0);
     const tAZl=ownSkus.reduce((a,s)=>a+(s.amz_drr_l||0),0);
     const tAN=ownSkus.reduce((a,s)=>a+(s.amz_now||0),0);
