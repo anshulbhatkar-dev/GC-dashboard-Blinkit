@@ -449,8 +449,8 @@ function t1(d){
 
   // ── Market size strip ─────────────────────────────────────────────────
   const schg_mkt=pct(d.mm,d.ml);
-  const osm_hdr=(psc&&sd[psc])?sd[psc].our_sh_mtd:om.share;
-  const osl_hdr=(psc&&sd[psc])?sd[psc].our_sh_lmtd:ol.share;
+  const osm_hdr=(psc&&sd[psc]&&sd[psc].our_sh_mtd>0)?sd[psc].our_sh_mtd:om.share;
+  const osl_hdr=(psc&&sd[psc]&&sd[psc].our_sh_lmtd>0)?sd[psc].our_sh_lmtd:ol.share;
   const sc_hdr=osm_hdr!=null&&osl_hdr!=null?osm_hdr-osl_hdr:null;
   const wow_sc=ow2.share!=null&&ow1.share!=null?ow2.share-ow1.share:null;
   h+=`<div class="mkt-strip">
@@ -503,8 +503,8 @@ function t1(d){
   }
 
   // ── Share table ───────────────────────────────────────────────────────
-  const osm=(psc&&sd[psc])?sd[psc].our_sh_mtd:om.share;
-  const osl=(psc&&sd[psc])?sd[psc].our_sh_lmtd:ol.share;
+  const osm=(psc&&sd[psc]&&sd[psc].our_sh_mtd>0)?sd[psc].our_sh_mtd:om.share;
+  const osl=(psc&&sd[psc]&&sd[psc].our_sh_lmtd>0)?sd[psc].our_sh_lmtd:ol.share;
   const csm=d.css_m??cm.share, csl=d.css_l??cl.share;
   const owow=ow2.share!=null&&ow1.share!=null?ow2.share-ow1.share:null;
   const cwow=cw2.share!=null&&cw1.share!=null?cw2.share-cw1.share:null;
