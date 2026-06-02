@@ -357,6 +357,11 @@ function setPreset(p){
   if(p==='mtd'){
     s1=P.mtd_s;e1=P.mtd_e;s2=P.lmtd_s;e2=P.lmtd_e;
     lbl=`<b>${P.mtd}</b> vs <b>${P.lmtd}</b>`;
+    // MTD uses pre-computed values — no dynamic aggregation needed
+    DYN={s1,e1,s2,e2,active:false,preset:'mtd'};
+    _setDpInputs(s1,e1,s2,e2);_setActiveBtn('mtd');
+    document.getElementById('dp-info-lbl').innerHTML=lbl;
+    render();return;
   }else if(p==='wow'){
     s1=P.w2_s;e1=P.w2_e;s2=P.w1_s;e2=P.w1_e;
     lbl=`W2 <b>${P.w2}</b> vs W1 <b>${P.w1}</b>`;
