@@ -204,9 +204,29 @@ table.iwt{width:100%;border-collapse:collapse}
 table.iwt th{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:#64748b;text-align:left;padding:5px 8px;border-bottom:2px solid #e2e8f0}
 table.iwt td{font-size:11.5px;color:#1e293b;padding:5px 8px;border-bottom:1px solid #f1f5f9}
 .iw-note{font-size:10.5px;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:6px 10px;margin-top:8px}
+
+/* ── AUTH GATE ── */
+#authGate{display:none;position:fixed;inset:0;z-index:9999;background:rgba(13,17,23,.97);align-items:center;justify-content:center}
+#authGate.on{display:flex}
+.authgate-card{background:#161b27;border:1px solid #30363d;border-radius:14px;padding:36px 40px;max-width:420px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.authgate-title{font-size:18px;font-weight:800;color:#fff;margin-bottom:8px}
+.authgate-sub{font-size:13px;color:#8b949e;margin-bottom:24px;line-height:1.6}
+#authBtnHost{display:flex;justify-content:center;margin-bottom:10px}
+.authgate-err{color:#f85149;font-size:12px;margin-top:8px;display:none}
+.authgate-err.on{display:block}
+.authgate-note{color:#6e7681;font-size:11px;margin-top:10px}
 </style>
 </head>
 <body>
+<div id="authGate" class="on">
+  <div class="authgate-card">
+    <div class="authgate-title">Blinkit Performance Dashboard</div>
+    <div class="authgate-sub">Restricted to Mosaic Wellness accounts — sign in with your <b>@mosaicwellness.in</b> Google account to continue.</div>
+    <div id="authBtnHost"></div>
+    <div class="authgate-err" id="authErr"></div>
+    <div class="authgate-note" id="authNote">Loading sign-in…</div>
+  </div>
+</div>
 <div class="wrap">
   <div class="hdr">
     <div class="hdr-title">⚡ GC Blinkit Dashboard — 29 Aug '26</div>
@@ -1133,5 +1153,68 @@ function tIns(){
     :`<div class="iw-sub">No events logged for ${B}. Add rows to <b>Scripts\\events.csv</b> (Date, Brand, Category, Note) — promo go-lives, competitor OOS, pack launches, BK banner slots, trade-spend changes. They show up here next pipeline run.</div>`}</div>`;
   return h;
 }
-window.onload=init;
+
+// ── AUTH GATE ──────────────────────────────────────────────────────────────────
+const AUTH={idToken:null,email:null,
+  clientId:'715660417203-847ijqq93aqhfmi7noqlkfjt7obkfrkg.apps.googleusercontent.com',
+  hostedDomain:'mosaicwellness.in'};
+const AUTH_STORAGE_KEY='blinkitPerfDashToken';
+function decodeJwtPayload(t){
+  try{
+    const b64=t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+    const pad=b64.length%4?'='.repeat(4-b64.length%4):'';
+    return JSON.parse(decodeURIComponent(atob(b64+pad).split('').map(c=>'%'+c.charCodeAt(0).toString(16).padStart(2,'0')).join('')));
+  }catch(e){return null;}
+}
+function setAuthed(idToken){
+  const p=decodeJwtPayload(idToken);
+  if(!p||!p.email||!p.exp) return false;
+  AUTH.idToken=idToken; AUTH.email=p.email;
+  sessionStorage.setItem(AUTH_STORAGE_KEY,idToken);
+  document.body.classList.add('authed');
+  document.getElementById('authGate').classList.remove('on');
+  return true;
+}
+function clearAuth(showMsg){
+  AUTH.idToken=null; AUTH.email=null;
+  sessionStorage.removeItem(AUTH_STORAGE_KEY);
+  document.body.classList.remove('authed');
+  document.getElementById('authGate').classList.add('on');
+  if(window.google?.accounts?.id) google.accounts.id.disableAutoSelect();
+  const err=document.getElementById('authErr');
+  if(showMsg){err.textContent=showMsg;err.classList.add('on');}
+  else{err.classList.remove('on');}
+}
+function onCredential(resp){
+  const p=decodeJwtPayload(resp.credential);
+  const domainOk=p&&((p.hd&&p.hd.toLowerCase()===AUTH.hostedDomain)||String(p.email||'').toLowerCase().endsWith('@'+AUTH.hostedDomain));
+  if(!p||!domainOk){
+    clearAuth(`"${p&&p.email||'That account'}" isn't a @${AUTH.hostedDomain} account.`);
+    return;
+  }
+  setAuthed(resp.credential);
+  startApp();
+}
+function initAuth(){
+  const cached=sessionStorage.getItem(AUTH_STORAGE_KEY);
+  if(cached){
+    const p=decodeJwtPayload(cached);
+    if(p&&p.exp&&p.exp*1000>Date.now()+60000){ if(setAuthed(cached)){ startApp(); return; } }
+    else sessionStorage.removeItem(AUTH_STORAGE_KEY);
+  }
+  waitForGsi(0);
+}
+function waitForGsi(attempt){
+  if(window.google?.accounts?.id){
+    google.accounts.id.initialize({client_id:AUTH.clientId,hosted_domain:AUTH.hostedDomain,callback:onCredential,auto_select:false});
+    google.accounts.id.renderButton(document.getElementById('authBtnHost'),{theme:'filled_blue',size:'large',shape:'pill',text:'signin_with',width:260});
+    document.getElementById('authNote').textContent='';
+    return;
+  }
+  if(attempt>=100){document.getElementById('authNote').textContent='Sign-in script failed to load — refresh.';return;}
+  setTimeout(()=>waitForGsi(attempt+1),100);
+}
+function startApp(){ init(); }
+initAuth();
+// ── END AUTH GATE ───────────────────────────────────────────────────────────
 </script></body></html>
